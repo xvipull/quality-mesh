@@ -1,0 +1,18 @@
+# Data and local exports
+data/raw/*
+!data/raw/.gitkeep
+data/staging/*
+!data/staging/.gitkeep
+reports/*
+!reports/.gitkeep
+
+# Secrets and local tooling
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+__pycache__/
+.pytest_cache/
+*.ipynb_checkpoints

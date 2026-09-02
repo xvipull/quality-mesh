@@ -1,0 +1,5 @@
+#!/bin/sh
+# Push only after a successful local commit. A failed push never invalidates the commit.
+if git remote get-url origin >/dev/null 2>&1; then
+  git push origin HEAD || echo "Warning: automatic push failed; run 'git push origin HEAD' after restoring network/authentication."
+fi
