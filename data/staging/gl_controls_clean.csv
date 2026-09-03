@@ -1,0 +1,4 @@
+control_date,source_system,order_count,order_amount,currency
+2026-08-30,ERP,1,1000.00,USD
+2026-08-31,ERP,1,250.50,USD
+2026-09-01,ERP,2,1299.99,USD

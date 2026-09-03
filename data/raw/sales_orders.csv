@@ -1,0 +1,5 @@
+order_id,customer_id,order_date,order_amount,currency,category
+so-1001,c-001,2026/08/30,1000.00,usd,online
+SO1002,C002,31-08-2026,250.50,USD,Wholesale
+so-1003,c003,2026-09-01,99.99,usd,RETAIL
+SO-1004,C004,2026/09/01,"1,200.00",USD,Online

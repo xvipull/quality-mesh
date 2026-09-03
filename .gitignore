@@ -1,10 +1,13 @@
 # Data and local exports
 data/raw/*
 !data/raw/.gitkeep
+!data/raw/*.csv
 data/staging/*
 !data/staging/.gitkeep
+!data/staging/*.csv
 reports/*
 !reports/.gitkeep
+!reports/*.md
 
 # Secrets and local tooling
 .env

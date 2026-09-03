@@ -1,0 +1,5 @@
+customer_id,customer_name,segment,status,created_date
+C001,Acme Retail,ENTERPRISE,ACTIVE,2024-01-15
+C002,Beacon Stores,SMB,ACTIVE,2024-02-15
+C003,Cedar Health,ENTERPRISE,ACTIVE,2024-03-01
+C004,Delta Foods,MID_MARKET,ACTIVE,2024-04-20

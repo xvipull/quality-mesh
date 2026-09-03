@@ -58,6 +58,15 @@ _Add approved, sanitized screenshots to `docs/images/` before replacing these pl
 
 Raw data and report exports must not contain production personal data. Rule changes require a named Data Owner, a test, and a documented KPI impact. See the security and privacy requirements in the charter.
 
+## Run the validated pipeline
+
+The included Sales Orders pilot uses synthetic data only. It cleans the inputs, runs 15 automated controls, writes reproducible staging CSVs, rebuilds `data/quality_mesh.db`, and generates the quality report.
+
+```sh
+PYTHONPATH=src python3 -m quality_mesh.pipeline
+PYTHONPATH=src python3 -m unittest discover -s tests -v
+```
+
 ## Git workflow
 
 The repository uses a local `post-commit` hook to push successful commits to `origin` automatically. It is enabled with `git config core.hooksPath .githooks`; network or authentication failures leave the commit intact and print a warning.
