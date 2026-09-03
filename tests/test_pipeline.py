@@ -30,6 +30,7 @@ class PipelineUnitTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             shutil.copytree(source_root / "data/raw", root / "data/raw")
+            shutil.copytree(source_root / "sql", root / "sql")
             (root / "data/staging").mkdir(parents=True)
             (root / "reports").mkdir()
             checks = run_pipeline(root)

@@ -169,6 +169,7 @@ def load_model(db_path: Path, clean: dict[str, list[dict[str, str]]], checks: li
         CREATE TABLE fact_sales_order (order_key INTEGER PRIMARY KEY, order_id TEXT NOT NULL UNIQUE, customer_key INTEGER NOT NULL, order_date_key INTEGER NOT NULL, category_key INTEGER NOT NULL, order_amount REAL NOT NULL, currency_code TEXT NOT NULL, FOREIGN KEY(customer_key) REFERENCES dim_customer(customer_key), FOREIGN KEY(order_date_key) REFERENCES dim_date(date_key), FOREIGN KEY(category_key) REFERENCES dim_category(category_key));
         CREATE TABLE fact_reconciliation_control (control_key INTEGER PRIMARY KEY, control_date_key INTEGER NOT NULL, source_system TEXT NOT NULL, order_count INTEGER NOT NULL, order_amount REAL NOT NULL, currency_code TEXT NOT NULL, FOREIGN KEY(control_date_key) REFERENCES dim_date(date_key));
         CREATE TABLE dq_check_result (check_id TEXT PRIMARY KEY, status TEXT NOT NULL, observed TEXT NOT NULL, expected TEXT NOT NULL, detail TEXT NOT NULL, evaluated_at_utc TEXT NOT NULL);
+        CREATE TABLE dq_reconciliation_exception (exception_key INTEGER PRIMARY KEY, check_id TEXT NOT NULL, observed TEXT NOT NULL, expected TEXT NOT NULL, detail TEXT NOT NULL, evaluated_at_utc TEXT NOT NULL);
         """)
         dates = sorted({row["order_date"] for row in clean["sales_orders"]} | {row["control_date"] for row in clean["gl_controls"]})
         for calendar_date in dates:
@@ -186,6 +187,12 @@ def load_model(db_path: Path, clean: dict[str, list[dict[str, str]]], checks: li
             connection.execute("INSERT INTO fact_reconciliation_control (control_date_key, source_system, order_count, order_amount, currency_code) VALUES (?, ?, ?, ?, ?)", (int(row["control_date"].replace("-", "")), row["source_system"], int(row["order_count"]), float(row["order_amount"]), row["currency"]))
         evaluated_at = datetime.now(timezone.utc).isoformat()
         connection.executemany("INSERT INTO dq_check_result VALUES (?, ?, ?, ?, ?, ?)", [(check["check_id"], check["status"], check["observed"], check["expected"], check["detail"], evaluated_at) for check in checks])
+        connection.execute("""
+            INSERT INTO dq_reconciliation_exception (check_id, observed, expected, detail, evaluated_at_utc)
+            SELECT check_id, observed, expected, detail, evaluated_at_utc
+            FROM dq_check_result
+            WHERE check_id LIKE 'RECON_%' AND status = 'FAIL'
+        """)
     connection.close()
 
 
@@ -200,6 +207,14 @@ def write_report(path: Path, checks: list[dict[str, Any]], clean: dict[str, list
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def apply_analytics_sql(root: Path, db_path: Path) -> None:
+    """Install repeatable reporting views after base tables have been rebuilt."""
+    connection = sqlite3.connect(db_path)
+    with connection:
+        connection.executescript((root / "sql/kpi_layer.sql").read_text(encoding="utf-8"))
+    connection.close()
+
+
 def run_pipeline(root: Path) -> list[dict[str, Any]]:
     raw_dir, staging_dir = root / "data/raw", root / "data/staging"
     raw = {name: read_csv(raw_dir / f"{name}.csv", name) for name in REQUIRED}
@@ -210,6 +225,7 @@ def run_pipeline(root: Path) -> list[dict[str, Any]]:
     for dataset, rows in clean.items():
         write_csv(staging_dir / f"{dataset}_clean.csv", rows)
     load_model(root / "data/quality_mesh.db", clean, checks)
+    apply_analytics_sql(root, root / "data/quality_mesh.db")
     write_report(root / "reports/data_quality_report.md", checks, clean)
     return checks
 

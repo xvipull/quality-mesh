@@ -67,6 +67,14 @@ PYTHONPATH=src python3 -m quality_mesh.pipeline
 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
+## SQL analytics and EDA
+
+`sql/kpi_layer.sql` installs reusable SQLite views for daily and period-over-period KPIs, segment and customer-cohort analysis, quality exceptions, and daily source-to-curated reconciliation. `sql/reconciliation_queries.sql` contains operational proof and exception queries. Run the EDA after the pipeline to generate the documented report and purposeful figures:
+
+```sh
+PYTHONPATH=src python3 -m quality_mesh.eda
+```
+
 ## Git workflow
 
 The repository uses a local `post-commit` hook to push successful commits to `origin` automatically. It is enabled with `git config core.hooksPath .githooks`; network or authentication failures leave the commit intact and print a warning.
