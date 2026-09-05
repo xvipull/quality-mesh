@@ -5,6 +5,8 @@ data/raw/*
 data/staging/*
 !data/staging/.gitkeep
 !data/staging/*.csv
+data/governed/*
+!data/governed/.gitkeep
 reports/*
 !reports/.gitkeep
 !reports/*.md

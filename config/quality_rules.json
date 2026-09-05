@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "incident_policy": {
+    "open_on_status": ["FAIL"],
+    "deduplication_key": "rule_id|dataset|evaluation_date"
+  },
+  "rules": [
+    {
+      "rule_id": "SO_REQUIRED_CUSTOMER",
+      "dataset": "sales_orders",
+      "kind": "expression",
+      "condition": "customer_id IS NOT NULL AND trim(customer_id) <> ''",
+      "severity": "CRITICAL",
+      "owner": "VP, Sales Operations",
+      "description": "Every order must retain a business customer identifier."
+    },
+    {
+      "rule_id": "SO_POSITIVE_AMOUNT",
+      "dataset": "sales_orders",
+      "kind": "expression",
+      "condition": "CAST(order_amount AS DOUBLE) > 0 AND CAST(order_amount AS DOUBLE) <= 1000000",
+      "severity": "HIGH",
+      "owner": "VP, Sales Operations",
+      "description": "Order amounts must be within the approved range."
+    },
+    {
+      "rule_id": "SO_CONFORMED_CATEGORY",
+      "dataset": "sales_orders",
+      "kind": "expression",
+      "condition": "category IN ('ONLINE', 'WHOLESALE', 'RETAIL')",
+      "severity": "MEDIUM",
+      "owner": "BI Data Owner",
+      "description": "Order category must map to the governed reporting dimension."
+    },
+    {
+      "rule_id": "SO_CONFORMED_CURRENCY",
+      "dataset": "sales_orders",
+      "kind": "expression",
+      "condition": "currency = 'USD'",
+      "severity": "HIGH",
+      "owner": "Corporate Controller",
+      "description": "Pilot reporting accepts USD only."
+    },
+    {
+      "rule_id": "SO_CUSTOMER_REFERENCE",
+      "dataset": "sales_orders",
+      "kind": "foreign_key",
+      "column": "customer_id",
+      "reference_dataset": "customers",
+      "reference_column": "customer_id",
+      "severity": "CRITICAL",
+      "owner": "VP, Customer Operations",
+      "description": "Every order customer must exist in the governed customer master."
+    },
+    {
+      "rule_id": "SO_FRESHNESS",
+      "dataset": "sales_orders",
+      "kind": "freshness",
+      "column": "order_date",
+      "max_age_days": 7,
+      "severity": "HIGH",
+      "owner": "Commerce Data Engineering",
+      "description": "Latest order date must be no more than seven days behind evaluation date."
+    }
+  ]
+}

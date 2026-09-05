@@ -75,6 +75,14 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 PYTHONPATH=src python3 -m quality_mesh.eda
 ```
 
+## Advanced decision-support analytics
+
+The configurable PySpark rule engine profiles clean datasets, evaluates owned rules, opens governed incidents for failures, and publishes results to Parquet plus SQLite governance views. See [advanced analytics documentation](docs/advanced_analytics.md).
+
+```sh
+PYTHONPATH=src python3 -m quality_mesh.advanced_analytics
+```
+
 ## Git workflow
 
 The repository uses a local `post-commit` hook to push successful commits to `origin` automatically. It is enabled with `git config core.hooksPath .githooks`; network or authentication failures leave the commit intact and print a warning.

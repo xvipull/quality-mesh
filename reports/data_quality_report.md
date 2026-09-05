@@ -1,6 +1,6 @@
 # Data Quality Report
 
-Generated: 2026-09-03 17:52 UTC
+Generated: 2026-09-05 06:03 UTC
 
 ## Result
 
@@ -29,7 +29,7 @@ Generated: 2026-09-03 17:52 UTC
 | RANGE_ORDER_AMOUNT | PASS | 0 | 0 | Amount must be > 0 and <= 1,000,000 |
 | VALID_ENUMS | PASS | 0 | 0 | Approved segment, status, category, and currency values |
 | FK_ORDER_CUSTOMER | PASS | 0 | 0 | Every order customer exists in customer master |
-| FRESH_RAW_EXTRACTS | PASS | 0 days | <= 7 days | [["customers.csv", 0], ["sales_orders.csv", 0], ["gl_controls.csv", 0]] |
+| FRESH_RAW_EXTRACTS | PASS | 2 days | <= 7 days | [["customers.csv", 2], ["sales_orders.csv", 2], ["gl_controls.csv", 2]] |
 | RECON_ROW_COUNT | PASS | 4 | 4 | Raw-to-clean sales order count |
 | RECON_ORDER_COUNT | PASS | 4 | 4 | Sales orders versus GL control count |
 | RECON_ORDER_VALUE | PASS | 2550.49 | 2550.49 | Sales orders versus GL control amount |
